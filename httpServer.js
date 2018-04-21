@@ -28,11 +28,12 @@ app.post('/uploadData',function(req,res){
           	console.log("not able to get connection "+ err);
            	res.status(400).send(err);
        	} 
-
-
-var querystring = "INSERT into questions (question,choice_1,choice_2,choice_3,choice_4,answer) values ('";
+//hold geometry value
+var geometrystring = "st_geomfromtext('POINT(" + req.body.longitude + " " +req.body.latitude + ")'";
+//insert sql of question , choice , answer and geometry into database	
+var querystring = "INSERT into questions (question,choice_1,choice_2,choice_3,choice_4,answer,geom) values ('";
 querystring = querystring + req.body.question + "','" + req.body.choice_1 + "','" + req.body.choice_2 + "','";
-querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "'," + req.body.answer+")";
+querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "'," + req.body.answer+","+geometrystring+"))";
        	console.log(querystring);
        	client.query( querystring,function(err,result) {
           done(); 
