@@ -30,9 +30,9 @@ app.post('/uploadData',function(req,res){
        	} 
 
 
-var querystring = "INSERT into questions (question,choice_1,choice_2,choice_3,choice_4) values ('";
+var querystring = "INSERT into questions (question,choice_1,choice_2,choice_3,choice_4,answer) values ('";
 querystring = querystring + req.body.question + "','" + req.body.choice_1 + "','" + req.body.choice_2 + "','";
-querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "')";
+querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "'," + req.body.answer+")";
        	console.log(querystring);
        	client.query( querystring,function(err,result) {
           done(); 
