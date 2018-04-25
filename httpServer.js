@@ -18,6 +18,7 @@ app.use(bodyParser.json());
 		next();
 	});
 
+//upload question from question form app
 app.post('/uploadData',function(req,res){
 	// note that we are using POST here as we are uploading data
 	// so the parameters form part of the BODY of the request rather than the RESTful API
@@ -47,6 +48,33 @@ querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "',"
 
 });
 
+//upload user answer from quiz app
+app.post('/uploadUseranswer',function(req,res){
+	// note that we are using POST here as we are uploading data
+	// so the parameters form part of the BODY of the request rather than the RESTful API
+	console.dir(req.body);
+
+ 	pool.connect(function(err,client,done) {
+       	if(err){
+          	console.log("not able to get connection "+ err);
+           	res.status(400).send(err);
+       	} 
+
+//insert sql of question , choice , answer and geometry into database	
+var querystring = "INSERT into useranswers (user_id,user_answer) values (";
+querystring = querystring + req.body.user_id + "," + req.body.user_answer + ")" ;
+       	console.log(querystring);
+       	client.query( querystring,function(err,result) {
+          done(); 
+          if(err){
+               console.log(err);
+               res.status(400).send(err);
+          }
+          res.status(200).send("Answer Uploaded");
+       });
+    });
+
+});
 
 
 // get question
@@ -62,7 +90,7 @@ app.get('/getQuestion', function (req,res) {
 
         	var querystring = " SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features  FROM ";
         	querystring = querystring + "(SELECT 'Feature' As type     , ST_AsGeoJSON(lg.geom)::json As geometry, ";
-        	querystring = querystring + "row_to_json((SELECT l FROM (SELECT question, choice_1,choice_2,choice_3,choice_4, answer) As l      )) As properties";
+        	querystring = querystring + "row_to_json((SELECT l FROM (SELECT id,question, choice_1,choice_2,choice_3,choice_4,answer) As l      )) As properties";
         	querystring = querystring + "   FROM questions  As lg limit 100  ) As f ";
         	console.log(querystring);
         	client.query(querystring,function(err,result){
