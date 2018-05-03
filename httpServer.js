@@ -61,8 +61,8 @@ app.post('/uploadUseranswer',function(req,res){
        	} 
 
 //insert sql of question , choice , answer and geometry into database	
-var querystring = "INSERT into useranswers (user_id,user_answer) values (";
-querystring = querystring + req.body.user_id + "," + req.body.user_answer + ")" ;
+var querystring = "INSERT into useranswers (user_id,user_answer,questionid) values (";
+querystring = querystring + req.body.user_id + "," + req.body.user_answer + ","+req.body.questionid + ")" ;
        	console.log(querystring);
        	client.query( querystring,function(err,result) {
           done(); 
