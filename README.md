@@ -16,7 +16,7 @@ Bitvise SFTP (SSH file transfer system)
 
 ## Database
 
-PG admin
+PostGres SQL
 
 ## Language used
 
@@ -57,70 +57,54 @@ Allow user to upload question's information to the database.
 ### Design Vision
 
 This application uses template available at [material-template] to create the web template.
-The template is used in [question-index] and [question-style].
+The template is used in [question-index.html] and [question-style.css].
 To be specific, this application used this template to create pretty header, tab bar, content section and button.
+
+### Features
+
+### What API used?
+
+In this application, leaflet API is applied to create map.
+
+Step 1 - Import leaflet API leaflet.js and leaflet.css file into [question-index.html].
+
+Example code
+
+	</style>
+		<!-- the following links add the CSS and Javascript required for the Leaflet Map -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.1.0/dist/leaflet.css"integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="crossorigin=""/>
+	
+	<script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="crossorigin=""></script>
+	<!-- the following CSS is used to set the size of the Map -->
+	<style type="text/css">
+		#mapid { height: 180px; }
+	</style>
+
+Step 2 - Create a map in [question-appActivity.js]
+
+Example code
+
+	// load the map
+	var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+			// load the tiles
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {maxZoom: 18,attribution: 'Map data &copy; <ahref="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,' +'Imagery © <a href="http://mapbox.com">Mapbox</a>',id: 'mapbox.streets'}).addTo(mymap);
+
+
+
+
 
 
 
 
  
 
-#### PhoneGap CLI
 
-The hello-world template is the default when you create a new application using the [phonegap-cli][phonegap-cli-url].
-
-    phonegap create my-app
-
-Create an app using this template specifically:
-
-    phonegap create my-app --template hello-world
-
-To see a list of other available PhoneGap templates:
-
-    phonegap template list
-
-## [config.xml][config-xml]
-
-#### android-minSdkVersion (Android only)
-
-Minimum SDK version supported on the target device. Maximum version is blank by default.
-
-This template sets the minimum to `14`.
-
-    <preference name="android-minSdkVersion" value="14" />
-
-#### &lt;access ...&gt; (All)
-
-This template defaults to wide open access.
-
-    <access origin="*" />
-
-It is strongly encouraged that you restrict access to external resources in your application before releasing to production.
-
-For more information on whitelist configuration, see the [Cordova Whitelist Guide][cordova-whitelist-guide] and the [Cordova Whitelist Plugin documentation][cordova-plugin-whitelist]
-
-## [www/index.html][index-html]
-
-#### Content Security Policy (CSP)
-
-The default CSP is similarly open:
-
-    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" />
-
-Much like the access tag above, you are strongly encouraged to use a more restrictive CSP in production.
-
-A good starting point declaration might be:
-
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" />
-
-For more information on the Content Security Policy, see the [section on CSP in the Cordova Whitelist Plugin documentation][cordova-plugin-whitelist-csp].
-
-Another good resource for generating a good CSP declaration is [CSP is Awesome][csp-is-awesome]
 
 
 [question]: https://github.com/sariyadilak/question
 [quiz]: https://github.com/sariyadilak/quiz
 [server]: https://github.com/sariyadilak/server
 [material-template]: https://getmdl.io/templates/text-only/index.html
-[question-index]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/index.html
-[question-style]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/styles.css
+[question-index.html]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/index.html
+[question-style.css]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/styles.css
+[question-appActivity.js]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/js/appActivity.js
