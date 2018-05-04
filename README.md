@@ -89,7 +89,7 @@ The system allow user to upload question's information to the database.
 
 ### Features
 
-Featureset in this application composed of question information, location and upload to database. 
+Featureset in this application composed of question information, location, upload to database and Refresh form and Refresh Map . 
 
 #### Question Information
 
@@ -143,7 +143,7 @@ Example code for returning value to the text box in [question-appActivity.js]
 3.The system would allow the user to track their location and return latitude and longitude value to the text box.
  In this function, HTML5 is used to hold the map and button to track user's location and Javascript is used to define function for tracking user's location and return Latitude and Longitude value to text box.
  
- Example code for tracking user's location button in [question-index.html]
+ Example code for creating button in [question-index.html]
  
 	<a href="#" class="mdl-button"onclick='trackLocation();return'><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">person_pin_circle</i>Track my location</a>
  
@@ -163,11 +163,64 @@ Example code for returning value to the text box in [question-appActivity.js]
 		marker
 		mymap.panTo(new L.LatLng(position.coords.latitude, position.coords.longitude), 18) //pan the map to user's location marker
 	}
-	
-	
-#### Button
 
 #### Upload to database
+
+This part is for uploading the user's question information to httpServer.
+When the user clicks "Start Upload" button, the data will start upload to httpServer.
+There are two functions in this part. 
+
+1. The system would get and process the value from text box and radio button, when the user clicks "Start Upload" button.
+This function uses HTML5 to generate "Start Upload" button and Javascript to get and process the value from text box and radio button.
+
+Example code for getting the value from text box and radio button in [question-uploadData.js]
+
+	function startDataUpload() {
+
+	//get value from text box by id
+	var question = document.getElementById("question").value;
+	
+	//define the variable that would be used in processData function
+	var postString = "question="+question ;
+
+	//get value from the radio button 
+	if (document.getElementById("1").checked) {
+ 		 postString=postString+"&answer="+1;
+	}
+	if (document.getElementById("2").checked) {
+ 		 postString=postString+"&answer="+2;
+	}
+	if (document.getElementById("3").checked) {
+ 		 postString=postString+"&answer="+3;
+	}
+	if (document.getElementById("4").checked) {
+ 		 postString=postString+"&answer="+4;
+	}
+	
+	processData(postString);
+	}
+
+2. The system would post the value to httpServer.
+This function uses Javascript to post the value from text box and radio button to httpServer in [question-uploadData.js]
+ 
+ Example code for posting the value to httpServer.
+ 
+	function processData(postString) {
+	   client = new XMLHttpRequest();
+	   client.open('POST','http://developer.cege.ucl.ac.uk:30281/uploadData',true);
+	   client.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	   client.onreadystatechange = dataUploaded;  
+	   client.send(postString);
+	}
+
+	function dataUploaded() {
+	  if (client.readyState == 4) {
+		document.getElementById("dataUploadResult").innerHTML = client.responseText;
+		}
+	}
+
+#### Refresh form and Refresh Map 
+
 
 
 ## Quiz app
@@ -234,6 +287,8 @@ The server would get information of user's answer from the Quiz App and store it
 [question-index.html]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/index.html
 [question-style.css]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/styles.css
 [question-appActivity.js]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/js/appActivity.js
+[question-uploadData.js]: https://github.com/sariyadilak/question/blob/master/ucesriy/www/js/uploadData.js
 [quiz-index.html]: https://github.com/sariyadilak/quiz/blob/master/ucesriy/www/index.html
 [quiz-style.css]: https://github.com/sariyadilak/quiz/blob/master/ucesriy/www/styles.css
 [quiz-appActivity.js]: https://github.com/sariyadilak/quiz/blob/master/ucesriy/www/js/appActivity.js
+[question-uploadUseranswer.js]: https://github.com/sariyadilak/quiz/blob/master/ucesriy/www/js/uploadUseranswer.js
