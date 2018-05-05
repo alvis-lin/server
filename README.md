@@ -2,17 +2,22 @@
 
 ## Introduction
 
-There are three major components to build each application, which are web client, web server and database.
+Question form app is a web browser based application, which allows users to set the question to be asked in the quiz application and stores those questions in the database.
+A Quiz App is a mobile location based application. This application will track the user’s location, and show up the question from a Question Setting app, when the user is near to the location of each question.
+The user's answer would be stored in the database. Thus,there are three major components to build each application, which are web client, web server and database.
+Web client is computer, mobile phone and laptop. Web client would request and response with the web server, which are internet, information server. The web server would query information by using SQL query from the database.
 
 ## Hardware requirement
 
-Android 5 onward
-
-Computer
+Android 5 onward for testing the application on mobile phone
 
 ## Software requirement
 
-Bitvise SFTP (SSH file transfer system)
+SSH file transfer system such as Bitvise SFTP for windows and Fugu for Mac
+
+Github (a version control system)
+
+Phonegap
 
 ## Database
 
@@ -30,7 +35,9 @@ CSS
 
 ### Server side code
 
-Javascript
+Javascript (node.js)
+
+SQL
 
 ## Link to download the code
 
@@ -74,6 +81,9 @@ Example code
 
 
 ## Question Form app
+
+Noted that Phonegap server need to be opened every time that user's would like to test the application.
+To open Phonegap server, type  "phonegap serve" into the bitvise terminal console.
 
 ### Overview
 
@@ -245,6 +255,8 @@ Example code for removing marker on the map in [question-appActivity.js]
 ## Quiz app
 
 Some fundamentally elements, which are already introduced in Question Form App, would not be mentioned again in Quiz App such as how to add the map and how to add the button
+Noted that Phonegap server need to be opened every time that user's would like to test the application.
+To open Phonegap server, type  "phonegap serve" into the bitvise terminal console.
 
 ### Overview
 
@@ -453,6 +465,10 @@ The processResult function would check the correctness of user's answer.
 Noted that httpServer.js need to be opened every time that user's would like to get or post information to the database.
 To open http server, type  "node httpServer.js&" in to the bitvise terminal console.
 
+### Overview
+
+Server side is a mandatory component for both Question Form App and Quiz App as these two applications need to get and post information from and to the database.
+
 ### Task Requirement
 
 The server would get information of the question from Question Form App and store it in the central database.
@@ -463,31 +479,122 @@ The server would get information of user's answer from the Quiz App and store it
 
 ### Features
 
-There are two features in server side, which are connect to postGIS database, get information and post information.
+There are four features in server side, which are form node js program, connect to postGIS database, post information and get information.
+Javascript is used to form node js server. All of the code is available in [server-httpServer].
+
+
+#### Form node js program
+
+This part is to form part of node js program to connect between web client, web server and database.
+
+	var express = require('express');
+	var path = require("path");
+	var app = express();
+		var fs = require('fs');
+	var bodyParser = require('body-parser');
+
+	app.use(bodyParser.urlencoded({
+	  extended: true
+	}));
+	app.use(bodyParser.json());
+	
+In addition, the functionality to query while phonegap server is running is also added.
+
+	app.use(function(req, res, next) {
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Headers", "X-Requested-With");
+		res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+		next();
+	});
 
 #### Connect to postGIS database
 
-#### Get information
+1.Put host, user, database, password and port in PostGISConnection.js file and put the file in certs folder in Bitvise
 
+2. Add the code to connect with PostGISConnection.js file in 
 
+	var configtext = ""+fs.readFileSync("/home/studentuser/certs/postGISConnection.js");
+
+	var configarray = configtext.split(",");
+	var config = {};
+	for (var i = 0; i < configarray.length; i++) {
+		var split = configarray[i].split(':');
+		config[split[0].trim()] = split[1].trim();
+	}
+	var pg = require('pg');
+	var pool = new pg.Pool(config);
+	console.log(config);
+
+	var http = require('http');
+	var httpServer = http.createServer(app); 
+	httpServer.listen(4480);
 
 #### Post information
 
 The Question Form App and Quiz App need to post question's information and user's answer information respectively to the main database.
+The code is the combination between node js Javascript and SQL language. SQL is used for inserting the data into the database.
 
+Example of code to post the question's information from httpServer to the questions table in the database.
 
+app.post('/uploadData',function(req,res){
+	// note that we are using POST here as we are uploading data
+	// so the parameters form part of the BODY of the request rather than the RESTful API
+	console.dir(req.body);
 
+ 	pool.connect(function(err,client,done) {
+       	if(err){
+          	console.log("not able to get connection "+ err);
+           	res.status(400).send(err);
+       	} 
 
+var geometrystring = "st_geomfromtext('POINT(" + req.body.longitude + " " +req.body.latitude + ")'";
+	
+var querystring = "INSERT into questions (question,choice_1,choice_2,choice_3,choice_4,answer,geom) values ('";
+querystring = querystring + req.body.question + "','" + req.body.choice_1 + "','" + req.body.choice_2 + "','";
+querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "'," + req.body.answer+","+geometrystring+"))";
+       	console.log(querystring);
+       	client.query( querystring,function(err,result) {
+          done(); 
+          if(err){
+               console.log(err);
+               res.status(400).send(err);
+          }
+          res.status(200).send("Update data successfully");
+       });
+    });
 
+});
 
+#### Get information
 
+The Quiz App need to get question's information from the main database.
+The code is the combination between node js Javascript and SQL language. SQL is used for query the data from the database.
 
+Example of code to get the question's information from questions table in the database.
 
+app.get('/getQuestion', function (req,res) {
+     pool.connect(function(err,client,done) {
+       if(err){
+           console.log("not able to get connection "+ err);
+           res.status(400).send(err);
+       } 
 
+        	var querystring = " SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features  FROM ";
+        	querystring = querystring + "(SELECT 'Feature' As type     , ST_AsGeoJSON(lg.geom)::json As geometry, ";
+        	querystring = querystring + "row_to_json((SELECT l FROM (SELECT id,question, choice_1,choice_2,choice_3,choice_4,answer) As l      )) As properties";
+        	querystring = querystring + "   FROM questions  As lg limit 100  ) As f ";
+        	console.log(querystring);
+        	client.query(querystring,function(err,result){
 
-
- 
-
+           done(); 
+           if(err){
+               console.log(err);
+               res.status(400).send(err);
+           }
+           res.status(200).send(result.rows);
+       });
+    });
+});
 
 
 
@@ -503,3 +610,4 @@ The Question Form App and Quiz App need to post question's information and user'
 [quiz-style.css]: https://github.com/sariyadilak/quiz/blob/master/ucesriy/www/styles.css
 [quiz-appActivity.js]: https://github.com/sariyadilak/quiz/blob/master/ucesriy/www/js/appActivity.js
 [question-uploadUseranswer.js]: https://github.com/sariyadilak/quiz/blob/master/ucesriy/www/js/uploadUseranswer.js
+[server-httpServer]: https://github.com/sariyadilak/server/blob/master/httpServer.js
