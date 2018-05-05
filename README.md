@@ -101,6 +101,7 @@ The system allow user to upload question's information to the database.
 
 questions table is used in the question form app. There are 8 columns in questions table, which are id, question, choice 1, choice 2, choice 3, choice 4, answer and geom.
 All of column would store as string apart from id, answer and geom. id, answer and geom are stored as serial, integer and geometry respectively.
+.
 
 ### Features
 
@@ -276,6 +277,7 @@ The system would tell the user, if the answer is correct or incorrect, and provi
 
 user_answer table is used in the quiz app. There are 4 columns in user_answer table, which are id, user_id, user_answer and questionid. 
 All of the column is stored in integer. Noted that questionid is the foreign key, which links with id from questions table.
+
 
 ### Features
 
@@ -536,9 +538,8 @@ The code is the combination between node js Javascript and SQL language. SQL is 
 
 Example of code to post the question's information from httpServer to the questions table in the database.
 
-app.post('/uploadData',function(req,res){
-	// note that we are using POST here as we are uploading data
-	// so the parameters form part of the BODY of the request rather than the RESTful API
+	app.post('/uploadData',function(req,res){
+
 	console.dir(req.body);
 
  	pool.connect(function(err,client,done) {
@@ -547,23 +548,23 @@ app.post('/uploadData',function(req,res){
            	res.status(400).send(err);
        	} 
 
-var geometrystring = "st_geomfromtext('POINT(" + req.body.longitude + " " +req.body.latitude + ")'";
-	
-var querystring = "INSERT into questions (question,choice_1,choice_2,choice_3,choice_4,answer,geom) values ('";
-querystring = querystring + req.body.question + "','" + req.body.choice_1 + "','" + req.body.choice_2 + "','";
-querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "'," + req.body.answer+","+geometrystring+"))";
-       	console.log(querystring);
-       	client.query( querystring,function(err,result) {
-          done(); 
-          if(err){
-               console.log(err);
-               res.status(400).send(err);
-          }
-          res.status(200).send("Update data successfully");
-       });
-    });
+	var geometrystring = "st_geomfromtext('POINT(" + req.body.longitude + " " +req.body.latitude + ")'";
+		
+	var querystring = "INSERT into questions (question,choice_1,choice_2,choice_3,choice_4,answer,geom) values ('";
+	querystring = querystring + req.body.question + "','" + req.body.choice_1 + "','" + req.body.choice_2 + "','";
+	querystring = querystring + req.body.choice_3 + "','" + req.body.choice_4 + "'," + req.body.answer+","+geometrystring+"))";
+			console.log(querystring);
+			client.query( querystring,function(err,result) {
+			  done(); 
+			  if(err){
+				   console.log(err);
+				   res.status(400).send(err);
+			  }
+			  res.status(200).send("Update data successfully");
+		   });
+		});
 
-});
+	});
 
 #### Get information
 
@@ -572,29 +573,29 @@ The code is the combination between node js Javascript and SQL language. SQL is 
 
 Example of code to get the question's information from questions table in the database.
 
-app.get('/getQuestion', function (req,res) {
-     pool.connect(function(err,client,done) {
-       if(err){
-           console.log("not able to get connection "+ err);
-           res.status(400).send(err);
-       } 
+	app.get('/getQuestion', function (req,res) {
+		 pool.connect(function(err,client,done) {
+		   if(err){
+			   console.log("not able to get connection "+ err);
+			   res.status(400).send(err);
+		   } 
 
-        	var querystring = " SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features  FROM ";
-        	querystring = querystring + "(SELECT 'Feature' As type     , ST_AsGeoJSON(lg.geom)::json As geometry, ";
-        	querystring = querystring + "row_to_json((SELECT l FROM (SELECT id,question, choice_1,choice_2,choice_3,choice_4,answer) As l      )) As properties";
-        	querystring = querystring + "   FROM questions  As lg limit 100  ) As f ";
-        	console.log(querystring);
-        	client.query(querystring,function(err,result){
+				var querystring = " SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features  FROM ";
+				querystring = querystring + "(SELECT 'Feature' As type     , ST_AsGeoJSON(lg.geom)::json As geometry, ";
+				querystring = querystring + "row_to_json((SELECT l FROM (SELECT id,question, choice_1,choice_2,choice_3,choice_4,answer) As l      )) As properties";
+				querystring = querystring + "   FROM questions  As lg limit 100  ) As f ";
+				console.log(querystring);
+				client.query(querystring,function(err,result){
 
-           done(); 
-           if(err){
-               console.log(err);
-               res.status(400).send(err);
-           }
-           res.status(200).send(result.rows);
-       });
-    });
-});
+			   done(); 
+			   if(err){
+				   console.log(err);
+				   res.status(400).send(err);
+			   }
+			   res.status(200).send(result.rows);
+		   });
+		});
+	});
 
 
 
