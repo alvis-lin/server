@@ -1,8 +1,8 @@
-# How to make question form app and quiz app?
+# How to make Question Setting app and quiz app?
 
 ## Introduction
 
-Question form app is a web browser based application, which allows users to set the question to be asked in the quiz application and stores those questions in the database.
+Question Setting app is a web browser based application, which allows users to set the question to be asked in the quiz application and stores those questions in the database.
 A Quiz App is a mobile location based application. This application will track the user’s location, and show up the question from a Question Setting app, when the user is near to the location of each question.
 The user's answer would be stored in the database. Thus,there are three major components to build each application, which are web client, web server and database.
 Web client is computer, mobile phone and laptop. Web client would request and response with the web server, which are internet, information server. The web server would query information by using SQL query from the database.
@@ -41,7 +41,7 @@ SQL
 
 ## Link to download the code
 
-Question Form App : [question]
+Question Setting App : [question]
 
 Quiz App: [quiz]
 
@@ -80,27 +80,27 @@ Example code
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {maxZoom: 18,attribution: 'Map data &copy; <ahref="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,' +'Imagery © <a href="http://mapbox.com">Mapbox</a>',id: 'mapbox.streets'}).addTo(mymap);
 
 
-## Question Form app
+## Question Setting app
 
 Noted that Phonegap server need to be opened every time that user's would like to test the application.
 To open Phonegap server, type  "phonegap serve" into the bitvise terminal console.
 
 ### Overview
 
-The Question Form App is an browser based application for users to generate question to be asked in Quiz App.
+The Question Setting App is an browser based application for users to generate question to be asked in Quiz App.
 
 ### Task Requirement
 
-The system allow user to fill in question, four multiple choices answer, answer to the question and question's location
+The system allows user to fill in questions, four multiple choices answers, answer to the question and question's location.
 
-The system allow user to track their location and pick the question's location on the map
+The system allows user to track their location and pick the question's location on the map.
 
-The system allow user to upload question's information to the database.
+The system allows user to upload question's information to the database.
 
 ### Database table
 
-questions table is used in the question form app. There are 8 columns in questions table, which are id, question, choice 1, choice 2, choice 3, choice 4, answer and geom.
-All of column would store as string apart from id, answer and geom. id, answer and geom are stored as serial, integer and geometry respectively.
+Questions table is used in the Question Setting app. There are 8 columns in questions table, which are id, question, choice 1, choice 2, choice 3, choice 4, answer and geom.
+All of the columns would store as string apart from id, answer and geom. id, answer and geom are stored as serial, integer and geometry respectively.
 .
 
 ### Features
@@ -109,9 +109,9 @@ Featureset in this application composed of question information, location, uploa
 
 #### Question Information
 
-This part is for the user to fill in the question informations, which are question, four multiple choices answer and answer of the question.
-This part would be on the Question Form content. HTML5 is used to create the text box and radio button for user to fill in the information.
-Question and four multiple choices answer would use text box, but answer of the question would use radio button to avoid user from filling non-integer.
+This part is for the user to fill in the question informations, which are questions, four multiple choices answers and answer of the question.
+This part would be on the Question Setting content. HTML5 is used to create the text box and radio button for user to fill in the information.
+Question and four multiple choices answer would use text box, but answer of the question would use radio button to avoid user from filling non-integer value.
 
 Example code to create text box in [question-index.html]
 
@@ -130,12 +130,12 @@ This part is for the user to fill in the location's of question. Location inform
 
 There are three functions, which user could use for filling the question's location.
 
-1.The system would allow the user to fill in the latitude and longitude text box to be the location of the question.
+1.The system would allow the user to fill in the latitude and longitude in the text box to be the location of the question.
 In this function, HTML5 is used creating the text box for filling latitude and longitude value.
 
-2.The system would allow the user to click on the map to define the question's location. The latitude and longitude location when user clicking on the map
+2.The system would allow the user to click on the map to define the question's location. When user clicking on the map, the latitude and longitude location 
 have to return to the text box.
-In this function, HTML5 is used to hold the map and Javascript is used to define function for clicking on the map and return Latitude and Longitude value to text box.
+In this function, HTML5 is used to hold the map and Javascript is used to define function for clicking on the map and return Latitude and Longitude value to the text box.
 
 Example code for div that holding map in [question-index.html]
 
@@ -255,34 +255,33 @@ Example code for removing marker on the map in [question-appActivity.js]
 	
 ## Quiz app
 
-Some fundamentally elements, which are already introduced in Question Form App, would not be mentioned again in Quiz App such as how to add the map and how to add the button
+Some fundamentally elements, which are already introduced in Question Setting App, would not be mentioned again in Quiz App such as how to add the map and how to add the button
 Noted that Phonegap server need to be opened every time that user's would like to test the application.
 To open Phonegap server, type  "phonegap serve" into the bitvise terminal console.
 
 ### Overview
 
-The Quiz App is an android application for users to answer the quiz from Question Form App.
+The Quiz App is an android application for users to answer the quiz from Question Setting App.
 
 ### Task Requirement
 
-The system allow user to track user's location.
+The system allows user to track user's location.
 
 The system would pop up the quiz, if the quiz's location is nearby the user.
 
-The system allow user to fill in and upload the user id and answer to the database.
+The system allows user to fill in and upload the user id and user's answer to the database.
 
 The system would tell the user, if the answer is correct or incorrect, and provide the answer for the user.
 
 ### Database table
 
-user_answer table is used in the quiz app. There are 4 columns in user_answer table, which are id, user_id, user_answer and questionid. 
+useranswers table is used in the quiz app. There are 4 columns in user_answer table, which are id, user_id, user_answer and questionid. 
 All of the column is stored in integer. Noted that questionid is the foreign key, which links with id from questions table.
 
 
 ### Features
 
 There are four important featureset in Quiz App, which are user's location, get the question information, display the nearby question, checking user's answer and upload user's answer to database
-The logic, which is used in this application, is to pop up a question, which is near to the user's location.
 
 #### User’s location
 
@@ -339,7 +338,7 @@ Example of converting text into GeoJSON in [quiz-appActivity.js].
 
 #### Display the nearby question 
 
-In order to the nearby question, the distance between user's location and question's location should be calculated.
+In order to display the nearby question, the distance between user's location and question's location should be calculated.
 500 meters is criterion for displaying the question. The rule is set that the question, which has the distance less than 500 meters from the user's location, would be popped up on the map.
 HTML5 is used to hold the map and create button to display the question. All of the functions are created by Javascript in [quiz-appActivity.js]
 
@@ -404,8 +403,8 @@ It is the combination between HTML5 and Javascript.
 		}
 		}
 		
-To enable the usage of questioncoords function, trackLocation function should be combined with getQuestions function
-because the latitude and longitude of user's location and question's location are received from those two functions and
+questioncoords function and trackLocation function should be combined with getQuestions function to enable the usage.
+It is because the latitude and longitude of user's location and question's location are received from those two functions and
 calculateDistance function uses latitude and longitude of both user and question.
 
 Example of calling two function in one function
@@ -421,7 +420,7 @@ The questionTrack function is then applied to "Track My Location" button in [qui
 This part is to check if the user's answer is correct or incorrect. 
 There is two steps to check the user's answer.
 
-1. Get of user's answer in radio button and define it as integer values, which are 1,2,3 and 4. The value is define as integer because the answer of the question stored as integer and we want to compare
+1. Get of user's answer from the radio button and define it as integer values, which are 1,2,3 and 4. The value is define as integer because the answer of the question stored as integer and we want to compare
 between the two values.
 
 	if (document.getElementById("1").checked) {
@@ -454,8 +453,9 @@ The button to upload the answer is "answer" button generated in [quiz-appActivit
 	upload_b = '<a href="#" class="mdl-button"onclick="checkResult();return"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">publish</i>Answer</a>';
 	
 The checkResult function combines two functions together, which are startDataUpload and processResult.
-startDataUpload function would upload question id, user id and user's answer are uploaded to httpServer.
-Question id is used for linking with the id in questions table.
+
+startDataUpload function would upload question id, user id and user's answer to httpServer.
+Question id is a foreign key for linking with the id in questions table.
 The method is similar to how to upload the question's information to database.
 The example code is in [question-uploadUseranswer.js].
 
@@ -469,11 +469,11 @@ To open http server, type  "node httpServer.js&" in to the bitvise terminal cons
 
 ### Overview
 
-Server side is a mandatory component for both Question Form App and Quiz App as these two applications need to get and post information from and to the database.
+Server side is a mandatory component for both Question Setting App and Quiz App as these two applications need to get and post information from and to the database.
 
 ### Task Requirement
 
-The server would get information of the question from Question Form App and store it in the central database.
+The server would get information of the question from Question Setting App and store it in the central database.
 
 The server would post information of question from the central database to the quiz app.
 
@@ -533,7 +533,7 @@ In addition, the functionality to query while phonegap server is running is also
 
 #### Post information
 
-The Question Form App and Quiz App need to post question's information and user's answer information respectively to the main database.
+The Question Setting App and Quiz App need to post question's information and user's answer information respectively to the main database.
 The code is the combination between node js Javascript and SQL language. SQL is used for inserting the data into the database.
 
 Example of code to post the question's information from httpServer to the questions table in the database.
